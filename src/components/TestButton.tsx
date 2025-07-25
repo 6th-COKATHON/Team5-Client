@@ -12,7 +12,7 @@ const TestButton = ({text, onClick, variant = 'filled'}: TestButtonProps) => {
 
   return (
     <button
-      className={`${baseStyle} ${variant === 'filled' ? filledStyle : outlinedStyle}`}
+      className={`${baseStyle} ${variant === 'filled' ? filledStyle : outlinedStyle} cursor-pointer`}
       onClick={onClick}>
       {text}
     </button>
