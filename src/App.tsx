@@ -4,7 +4,10 @@ import TestFlowPage from './pages/TestFlowPage';
 import ChemistryLayout from './layout/ChemistryLayout';
 import ChemistryPage from './pages/ChemistryPage';
 import CreateChemistryPage from './pages/CreateChemistryPage';
+
 import IntroPage from './pages/IntroPage';
+
+import ChemistryResultPage from './pages/ChemistryResultPage';
 
 function App() {
   return (
@@ -17,6 +20,9 @@ function App() {
         </Route>
         <Route element={<ChemistryLayout />}>
           <Route path='/chemistry' element={<ChemistryPage />}></Route>
+          <Route
+            path='/chemistry/result'
+            element={<ChemistryResultPage />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
