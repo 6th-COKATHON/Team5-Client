@@ -8,7 +8,7 @@ const TestButton = ({text, onClick, variant = 'filled'}: TestButtonProps) => {
   const baseStyle =
     'w-full h-[60px] text-center rounded-full font-bold text-2xl leading-[normal]';
   const filledStyle = 'bg-primary-pink text-white';
-  const outlinedStyle = 'border border-primary-pink text-primary-pink';
+  const outlinedStyle = 'border border-primary-pink text-primary-pink bg-white';
 
   return (
     <button
