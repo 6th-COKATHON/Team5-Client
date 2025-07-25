@@ -12,3 +12,14 @@
 ::-webkit-scrollbar {
   display: none;
 }
+
+@theme {
+  --color-primary-pink: #f4378a;
+  --color-pink-1: #f772ad;
+  --color-pink-2: #faa9cd;
+  --color-pink-3: #fcc9e0;
+  --color-white: #ffffff;
+  --color-peach: #f7828f;
+  --color-yellow: #f9e098;
+  --color-black: #181818;
+}
