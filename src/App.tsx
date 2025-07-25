@@ -6,6 +6,7 @@ import ChemistryPage from './pages/ChemistryPage';
 import CreateChemistryPage from './pages/CreateChemistryPage';
 
 import IntroPage from './pages/IntroPage';
+import TestResultPage from './pages/TestResultPage';
 
 import ChemistryResultPage from './pages/ChemistryResultPage';
 
@@ -16,6 +17,7 @@ function App() {
         <Route element={<TestLayout />}>
           <Route index element={<IntroPage />}></Route>
           <Route path='test' element={<TestFlowPage />}></Route>
+          <Route path='result' element={<TestResultPage />}></Route>
           <Route path='create' element={<CreateChemistryPage />}></Route>
         </Route>
         <Route element={<ChemistryLayout />}>
