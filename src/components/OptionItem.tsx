@@ -1,8 +1,8 @@
 interface OptionItemProps {
   text: string;
   variant?: 'text-light' | 'text-bold';
-  onClick: () => void;
-  isSelected: boolean;
+  onClick?: () => void;
+  isSelected?: boolean;
 }
 
 const OptionItem = ({
