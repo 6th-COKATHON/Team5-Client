@@ -1,23 +1,63 @@
+import {useState} from 'react';
 import OptionItem from '../components/OptionItem';
 import Logo from '@/assets/logo.svg?react';
+import TestButton from '../components/TestButton';
+import {steps} from '../constant';
 
 const TestPage = () => {
+  const [currentStep, setCurrentStep] = useState(0);
+  const {title, description} = steps[currentStep];
+  const step = steps[currentStep];
+
+  const handleNext = () => {
+    if (currentStep < steps.length - 1) setCurrentStep(currentStep + 1);
+  };
+  const handlePrev = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
   return (
-    <div className='flex flex-col items-center'>
+    <div className='flex flex-col items-center gap-[30px]'>
       <Logo className='w-[157px]' />
-      <div className='flex mb-[30px] flex-col w-[438px]'>
-        <h1 className='font-semibold text-[32px]'>
-          1. 데이트 할 때 나의 모습은?
-        </h1>
+      <div className='flex flex-col w-[438px]'>
+        <h1 className='font-semibold text-[32px]'>{title}</h1>
         <span className='font-normal text-xl color text-black/60 '>
-          가장 나와 가까운 모습을 골라주세요.
+          {description}
         </span>
       </div>
       <div className='flex flex-col gap-[30px]'>
-        <OptionItem text='내가 주도해서 계획을 짜고 이끌어 가는 편' />
-        <OptionItem text='상대의 리드에 잘 맞춰주는 편' />
-        <OptionItem text='분위기를 살리고 웃음을 유도하는 편' />
-        <OptionItem text='조용하지만 진심을 담아 챙기는 편' />
+        {step.question.map((q, index) => (
+          <OptionItem key={index} text={q.text} />
+        ))}
+      </div>
+
+      <div className='w-[438px] mt-[66px]'>
+        {currentStep === 0 ? (
+          // 첫 번째 페이지
+          <TestButton text='다음 질문' variant='filled' onClick={handleNext} />
+        ) : currentStep < steps.length - 1 ? (
+          // 중간 페이지
+          <div className='flex flex-row gap-[35px]'>
+            <TestButton text='이전' variant='outlined' onClick={handlePrev} />
+            <TestButton
+              text='다음 질문'
+              variant='filled'
+              onClick={handleNext}
+            />
+          </div>
+        ) : (
+          // 마지막 페이지
+          <div className='flex flex-row gap-[35px]'>
+            <TestButton text='이전' variant='outlined' onClick={handlePrev} />
+            <TestButton
+              text='결과 보기'
+              variant='filled'
+              onClick={() => console.log('제출 클릭')}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
