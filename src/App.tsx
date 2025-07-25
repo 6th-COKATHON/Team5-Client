@@ -1,6 +1,8 @@
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import TestLayout from './layout/TestLayout';
 import TestFlowPage from './pages/TestFlowPage';
+import ChemistryLayout from './layout/ChemistryLayout';
+import ChemistryPage from './pages/ChemistryPage';
 
 function App() {
   return (
@@ -8,6 +10,9 @@ function App() {
       <Routes>
         <Route element={<TestLayout />}>
           <Route path='/' element={<TestFlowPage />}></Route>
+        </Route>
+        <Route element={<ChemistryLayout />}>
+          <Route path='/chemistry' element={<ChemistryPage />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
