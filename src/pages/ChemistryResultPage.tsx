@@ -1,32 +1,62 @@
 import BackgroundLayout from '@/assets/background_layout.svg?react';
 import Logo from '@/assets/logo.svg?react';
-import ProfileImageLayout from '@/assets/profile_image_layout.svg?react';
+import LoadingHeart from '@/assets/loading-heart.svg?react';
+import Loading from '@/assets/loading.svg?react';
 import TestButton from '../components/TestButton';
+import {useEffect, useState} from 'react';
+import {fetchChemistryResult} from '../api/fetchChemistryResult';
+import {useLocation, useNavigate} from 'react-router-dom';
 
 const ChemistryResultPage = () => {
-  const resultData = {
-    rank: 1,
-    partnerName: '지민',
-    chemistryType: '티키타카 공감즈',
-    score: 92,
-    maxScore: 100,
-    analysis: [
-      '당신은 이끌고, 지민은 부드럽게 맞춰줍니다.',
-      '빠르게 분위기를 읽고 배려하는 지민은',
-      '당신의 솔직한 표현을 자연스럽게 받아들이고 존중해줘요.',
-      '말하지 않아도 통하는 순간이 많고, 감정선이 비슷해',
-      '안정적인 연결이 가능한 조합이에요.',
-    ],
-    tips: [
-      '✔️ 너무 앞서 나가기보단, 상대의 페이스도 존중해 주세요.',
-      '✔️ 대화를 자주 나누고, 감정 표현을 격려해 주세요.',
-      '✔️ 진지한 얘기 뒤엔 소소한 농담으로 분위기를 풀어주는 것도 좋아요.',
-    ],
-    rankings: [
-      {name: '뷔', score: 75, rank: 2},
-      {name: '진', score: 60, rank: 3},
-    ],
-  };
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const state = location.state as {
+    celebrityIds?: number[];
+    personalityType?: string;
+  } | null;
+
+  const celebrityIds = state?.celebrityIds ?? [];
+  const personalityType = state?.personalityType ?? 'A';
+
+  const [resultData, setResultData] = useState<null | {
+    allChemistryScores: {
+      celebrityId: number;
+      celebrityName: string;
+      chemistryScore: number;
+    }[];
+    bestMatchCelebrityImageUrl: string;
+    bestMatchCelebrityName: string;
+    bestChemistryName: string;
+    bestCompatibilityScore: number;
+    detailedAnalysis: string;
+    advice: string;
+  }>(null);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (celebrityIds.length === 0) {
+      setError('분석할 연예인 정보가 없습니다.');
+      return;
+    }
+
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchChemistryResult(celebrityIds, personalityType);
+        setResultData(data);
+      } catch (err) {
+        console.error('Failed to load chemistry result:', err);
+        setError('케미 분석 결과를 불러오지 못했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, [celebrityIds, personalityType]);
 
   const ContentBox = ({
     children,
@@ -40,6 +70,29 @@ const ChemistryResultPage = () => {
       {children}
     </div>
   );
+
+  if (loading)
+    return (
+      <div className='flex flex-col justify-center items-center h-screen gap-10'>
+        <LoadingHeart />
+        <Loading />
+        <span className='text-xl font-semibold'>조금만 기다려주세요...</span>
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className='flex justify-center items-center h-screen flex-col gap-4'>
+        <span className='text-red-600 font-semibold'>{error}</span>
+        <button
+          onClick={() => navigate(-1)}
+          className='px-4 py-2 bg-primary-pink text-white rounded'>
+          뒤로 가기
+        </button>
+      </div>
+    );
+
+  if (!resultData) return null;
 
   return (
     <div className='flex justify-center'>
@@ -58,22 +111,32 @@ const ChemistryResultPage = () => {
           <BackgroundLayout className='absolute top-0 left-0 w-full h-full z-0' />
 
           {/* 콘텐츠 */}
-          <div className='relative z-10 px-6 pt-8 pb-[40px] px-20 flex flex-col items-center text-center gap-5'>
+          <div className='relative z-10 pt-8 pb-[40px] px-20 flex flex-col items-center text-center gap-5'>
             {/* 프로필 */}
             <ContentBox className='relative '>
               <div className='absolute -top-[11px] left-1/2 transform -translate-x-1/2'>
                 <div className='rounded-[50px] border border-dashed border-[#F4378A] bg-[radial-gradient(50%_50%_at_50%_50%,_#F4378A_0%,_#F772AD_100%)] px-3 py-1'>
                   <span className='text-white font-[Warhaven] text-[14px] font-bold'>
-                    우리 케미 {resultData.rank}등
+                    우리 케미 1등 {/* 임의 표시, 수정 가능 */}
                   </span>
                 </div>
               </div>
-              <ProfileImageLayout className='w-[120px] h-[120px] mx-auto' />
+              {/* 이미지 url로 변경 */}
+              <img
+                src={resultData.bestMatchCelebrityImageUrl || undefined}
+                alt={resultData.bestMatchCelebrityName}
+                className='w-[120px] h-[120px] rounded-full object-cover mx-auto'
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = `https://via.placeholder.com/120x120?text=${encodeURIComponent(
+                    resultData.bestMatchCelebrityName
+                  )}`;
+                }}
+              />
               <div className='text-lg font-bold text-black mt-2'>
-                {resultData.partnerName}
+                {resultData.bestMatchCelebrityName}
               </div>
             </ContentBox>
-
             {/* 케미명 */}
             <ContentBox className='relative pt-4'>
               <div className='absolute -top-[11px] left-1/2 transform -translate-x-1/2'>
@@ -84,7 +147,7 @@ const ChemistryResultPage = () => {
                 </div>
               </div>
               <div className='text-sm font-semibold text-black'>
-                {resultData.chemistryType}
+                {resultData.bestChemistryName}
               </div>
             </ContentBox>
 
@@ -98,12 +161,12 @@ const ChemistryResultPage = () => {
                 </div>
               </div>
               <div className='text-base font-bold text-black'>
-                {resultData.score}점 / {resultData.maxScore}점
+                {resultData.bestCompatibilityScore}점
               </div>
             </ContentBox>
 
             {/* 분석 */}
-            <ContentBox className='relative pt-4'>
+            <ContentBox className='relative pt-4 '>
               <div className='absolute -top-[11px] left-1/2 transform -translate-x-1/2'>
                 <div className='rounded-[50px] border border-dashed border-[#F4378A] bg-[radial-gradient(50%_50%_at_50%_50%,_#F4378A_0%,_#F772AD_100%)] px-3 py-1'>
                   <span className='text-white font-[Warhaven] text-[14px] font-bold'>
@@ -111,9 +174,9 @@ const ChemistryResultPage = () => {
                   </span>
                 </div>
               </div>
-              {resultData.analysis.map((line, index) => (
-                <div key={index}>{line}</div>
-              ))}
+              <div style={{whiteSpace: 'pre-wrap'}}>
+                {resultData.detailedAnalysis}
+              </div>
             </ContentBox>
 
             {/* 팁 */}
@@ -125,29 +188,25 @@ const ChemistryResultPage = () => {
                   </span>
                 </div>
               </div>
-              <div className='text-center'>
-                {resultData.tips.map((tip, index) => (
-                  <div key={index}>{tip}</div>
-                ))}
-              </div>
+              <div className='text-center'>{resultData.advice}</div>
             </ContentBox>
 
-            {/* 데뷔조 */}
+            {/* 데뷔조 (allChemistryScores 리스트로 간단 구현) */}
             <ContentBox className='relative pt-4'>
               <div className='absolute -top-[11px] left-1/2 transform -translate-x-1/2'>
                 <div className='rounded-[50px] border border-dashed border-[#F4378A] bg-[radial-gradient(50%_50%_at_50%_50%,_#F4378A_0%,_#F772AD_100%)] px-3 py-1'>
                   <span className='text-white font-[Warhaven] text-[14px] font-bold'>
-                    케미 데뷔조
+                    케미 점수 리스트
                   </span>
                 </div>
               </div>
-              <div className='flex justify-center gap-6'>
-                {resultData.rankings.map((person, index) => (
-                  <div key={index} className='flex flex-col items-center'>
-                    <ProfileImageLayout className='w-[60px] h-[60px]' />
-                    <span className='text-xs mt-1'>
-                      {person.rank}등: {person.name} ({person.score}점)
-                    </span>
+              <div className='flex flex-col gap-2'>
+                {resultData.allChemistryScores.map((score) => (
+                  <div
+                    key={score.celebrityId}
+                    className='flex justify-between border-b border-gray-300 py-1 px-4'>
+                    <span>{score.celebrityName}</span>
+                    <span>{score.chemistryScore}점</span>
                   </div>
                 ))}
               </div>
@@ -157,7 +216,18 @@ const ChemistryResultPage = () => {
 
         {/* 버튼 */}
         <div className='w-[438px]'>
-          <TestButton text='케미스토리 만들기' variant='filled' />
+          <TestButton
+            text='케미스토리 만들기'
+            variant='filled'
+            onClick={() =>
+              navigate('/create', {
+                state: {
+                  personalityType,
+                  celebrityName: resultData.bestMatchCelebrityName,
+                },
+              })
+            }
+          />
         </div>
       </div>
     </div>
