@@ -1,5 +1,17 @@
+import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import TestPage from './pages/TestPage';
+import TestLayout from './layout/TestLayout';
+
 function App() {
-  return <div className='text-red-500'>초기 세팅</div>;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route element={<TestLayout />}>
+          <Route path='/' element={<TestPage />}></Route>
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
