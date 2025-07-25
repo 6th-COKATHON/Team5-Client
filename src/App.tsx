@@ -4,10 +4,9 @@ import TestFlowPage from './pages/TestFlowPage';
 import ChemistryLayout from './layout/ChemistryLayout';
 import ChemistryPage from './pages/ChemistryPage';
 import CreateChemistryPage from './pages/CreateChemistryPage';
-
 import IntroPage from './pages/IntroPage';
 import TestResultPage from './pages/TestResultPage';
-
+import ChemistryStoryPage from './pages/ChemistryStoryPage';
 import ChemistryResultPage from './pages/ChemistryResultPage';
 
 function App() {
@@ -25,6 +24,8 @@ function App() {
           <Route
             path='/chemistry/result'
             element={<ChemistryResultPage />}></Route>
+          <Route path='/chemistry/story' element={<ChemistryStoryPage />} />
+          <Route path='/story' element={<ChemistryStoryPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
