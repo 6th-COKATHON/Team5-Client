@@ -1,8 +1,7 @@
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 @import 'tailwindcss';
 
 :root {
-  font-family: 'Pretendard', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -11,15 +10,4 @@
 }
 ::-webkit-scrollbar {
   display: none;
-}
-
-@theme {
-  --color-primary-pink: #f4378a;
-  --color-pink-1: #f772ad;
-  --color-pink-2: #faa9cd;
-  --color-pink-3: #fcc9e0;
-  --color-white: #ffffff;
-  --color-peach: #f7828f;
-  --color-yellow: #f9e098;
-  --color-black: #181818;
 }
